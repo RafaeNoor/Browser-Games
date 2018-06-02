@@ -81,8 +81,14 @@ window.onload = function() {
 
   setInterval(() => {
     // code will execute at 60 frames per second
+    if(lives >= 0){
+      updateScreen();
+    } else {
+      bird.p.x = 0;
+      bird.p.y = 0;
+    }
     drawScreen();
-    updateScreen();
+    
            
   },1000/fps)
 
@@ -131,9 +137,11 @@ function mousePress(evt){
 
 function mouseUp(evt){
   isClick = false;
-  lives --;
+  if(lives >= 0){
+    lives --;
+  }
   console.log('Mouse up')
-  bird.p.vx = (160-bird.p.x)/8;
+  bird.p.vx = (160-bird.p.x)/10;
   bird.p.vy = ((canv.height -250)-bird.p.y)/10;
   console.log(`vx = ${bird.p.vx}, by = ${bird.p.vy}`)
 
@@ -230,8 +238,8 @@ function updateScreen(){
 
 function detectContact(pgSt){
   for(var i=0;i<pgSt.length;i++){
-    if(!isClick && bird.p.x >= pgSt[i].x && bird.p.x <= pgSt[i].x + 60
-        && bird.p.y >= pgSt[i].y && bird.p.y <= pgSt[i].y +60) { 
+    if(!isClick && bird.p.x >= pgSt[i].x && bird.p.x <= pgSt[i].x + 80
+        && bird.p.y >= pgSt[i].y && bird.p.y <= pgSt[i].y +80) { 
       pgSt[i].dead = true;
       console.log('contact')
     }
