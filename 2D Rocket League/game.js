@@ -414,6 +414,10 @@ function isGoal(){
   } else if(football.p.x-BALL_WIDTH/2 <= 0 && football.p.y >= 0.2*canv.height
       && football.p.y <= 0.75*canv.height){
     console.log('Player 2 scored');
+    goalSound.play()
+    window.setTimeout(() =>{
+      goalSound.stop()},4000)
+
     scoreP2++;
     defaultPositions();
   }
