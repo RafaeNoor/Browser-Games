@@ -9,8 +9,32 @@ class Player {
   }
 }
 
+function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }
+}
+
+var bgm = new sound('sounds/disco.mp3');
+bgm.play();
+
+var hitSound = new sound('sounds/hit.mp3');
+var goalSound = new sound('sounds/goal.mp3');
+
 let CAR_WIDTH = 32*2;
 let BALL_WIDTH = CAR_WIDTH*2.5;
+
+
+scoreP1 = scoreP2 = 0;
 
 
 
@@ -86,26 +110,18 @@ window.onload = function() {
 
 
 
-  football.p.x = canv.width/2 - BALL_WIDTH/2;
-  football.p.y = canv.height/2 - BALL_WIDTH/2;
+  
 
-
-  player1.p.x = 50;
-  player1.p.y = 50;
-  player1.orient = Math.PI;
-
-  player2.p.x = canv.width - CAR_WIDTH;
-  player2.p.y = canv.height - CAR_WIDTH;
-
-
+  defaultPositions();
   playerList = [player1, player2, football];
   let i = 0;
 
 
-  
+  ctx.fillStyle = 'black';
   setInterval(() => {
     i+=0.1/4;
     //console.log(i);
+
 
     ctx.clearRect(0,0,canv.width,canv.height);
     background.render(0,0);
@@ -132,6 +148,18 @@ window.onload = function() {
     football.render(-BALL_WIDTH/2,-BALL_WIDTH/2);
     ctx.restore();
     
+    // goal post locations
+    //ctx.fillRect(0,canv.height*0.2,10,canv.height*0.55);
+    //ctx.fillRect(canv.width-10,canv.height*0.2,10,canv.height*0.55);
+    //ctx.fillRect(football.p.x,football.p.y,25,25);
+
+    ctx.font="20px Verdana";
+    ctx.fillStyle= 'white';
+    ctx.fillText(`Score: ${scoreP1}`,50,50);
+    ctx.fillText(`Score: ${scoreP2}`,canv.width-150,50);
+    isGoal();
+
+
 
 
 
@@ -243,7 +271,6 @@ function sprite(options){
     speed = 8;
     //console.log(isCol);
     if(isCol){
-      console.log('here');
       that.p.x -= that.p.vx*1.5;
       that.p.y -= that.p.vy*1.5;
     }
@@ -351,6 +378,9 @@ function ballCollision(playerList){
   isCol = colObj['isCol'];
   
   if(isCol){
+    hitSound.play();
+    window.setTimeout(()=>{
+      hitSound.stop();}, 4000);
     football.isMove = true;
     switch(colObj['player']){
       case 5: // wall
@@ -370,4 +400,40 @@ function ballCollision(playerList){
   }
 }
 
+function isGoal(){
+  //if player 1 scored
+  if(football.p.x+BALL_WIDTH/2 >= canv.width && football.p.y >= 0.2*canv.height
+      && football.p.y <= 0.75*canv.height){
+    console.log('Player 1 scored');
+    goalSound.play()
+    window.setTimeout(() =>{
+      goalSound.stop()},4000)
+
+    scoreP1++;
+    defaultPositions();
+  } else if(football.p.x-BALL_WIDTH/2 <= 0 && football.p.y >= 0.2*canv.height
+      && football.p.y <= 0.75*canv.height){
+    console.log('Player 2 scored');
+    scoreP2++;
+    defaultPositions();
+  }
+}
+
+
+function defaultPositions(){
+  football.p.x = canv.width/2;
+  football.p.y = canv.height/2;
+
+  football.p.vx = 0;
+  football.p.vy = 0;
+
+
+  player1.p.x = 50;
+  player1.p.y = 50;
+  player1.orient = Math.PI;
+
+  player2.p.x = canv.width - CAR_WIDTH;
+  player2.p.y = canv.height - CAR_WIDTH;
+  player2.orient = 0;
+}
 
