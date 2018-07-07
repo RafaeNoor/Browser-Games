@@ -289,11 +289,6 @@ function sprite(options){
       that.p.x += that.p.vx;
       that.p.y += that.p.vy;
     }
-    if(isCol){
-      console.log('here');
-      that.p.x -= that.p.vx*1.5;
-      that.p.y -= that.p.vy*1.5;
-    }
   };
 
 
@@ -355,13 +350,16 @@ function sprite(options){
       }
     }
 
-    if(that.p.x-xLow <=0 || that.p.x+xLow >=canv.width ||  
-     that.p.y-yLow <=0 || that.p.y+yLow >=canv.height){
+    if(that.p.x-xLow <=0 || that.p.x+xLow >=canv.width){
       console.log('collision with wall');
       retObj['isCol'] = true;
       retObj['player'] = 5;// -1 for wall
       return retObj;
-
+    }
+    if(that.p.y-yLow <=0 || that.p.y+yLow >=canv.height){
+      retObj['isCol'] = true;
+      retObj['player'] = 6;// -1 for wall
+      return retObj;
     }
     retObj['isCol'] = false;
     retObj['player'] = 5;
@@ -386,7 +384,10 @@ function ballCollision(playerList){
       case 5: // wall
         console.log('ball wall');
         football.p.vx = -football.p.vx;
-        football.p.vy = -football.p.vy;
+        //football.p.vy = -football.p.vy;
+        break;
+      case 6: //wall y
+        football.p.vy = - football.p.vy;
         break;
       case 1: //player1
         football.p.vx = player1.p.vx*0.75;
