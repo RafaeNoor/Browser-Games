@@ -120,8 +120,6 @@ window.onload = function() {
   ctx.fillStyle = 'black';
   setInterval(() => {
     i+=0.1/4;
-    //console.log(i);
-
 
     ctx.clearRect(0,0,canv.width,canv.height);
     background.render(0,0);
@@ -129,15 +127,16 @@ window.onload = function() {
     //Update player positions
     player1.update(playerList);
     player2.update(playerList);
-    //football.update(playerList);
+    
     ballCollision(playerList);
     football.p.x += football.p.vx;
     football.p.y += football.p.vy;
 
 
-    
+    // Ball deceleration
+    football.p.vx *= 0.995;
+    football.p.vy *= 0.995;
 
-    
     //Render player objects in correct orientations and locations
     player1.drawPlayer();
     player2.drawPlayer();
@@ -148,24 +147,11 @@ window.onload = function() {
     football.render(-BALL_WIDTH/2,-BALL_WIDTH/2);
     ctx.restore();
     
-    // goal post locations
-    //ctx.fillRect(0,canv.height*0.2,10,canv.height*0.55);
-    //ctx.fillRect(canv.width-10,canv.height*0.2,10,canv.height*0.55);
-    //ctx.fillRect(football.p.x,football.p.y,25,25);
-
     ctx.font="20px Verdana";
     ctx.fillStyle= 'white';
     ctx.fillText(`Score: ${scoreP1}`,50,50);
     ctx.fillText(`Score: ${scoreP2}`,canv.width-150,50);
     isGoal();
-
-
-
-
-
-    
-
-        
     
   },1000/fps)
 
