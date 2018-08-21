@@ -261,19 +261,7 @@ function keyPress(evt){
       p2.vx = playerSpeed;
       p2.orient = 2;
       break;
-
-
-
-
-
-
-
-
-
-
   }
-
-
 }
 
 function keyUp(evt){
@@ -305,9 +293,8 @@ function keyUp(evt){
       break;
     case 68:
       p2.vx = 0;
+      break;
   }
-
-
 }
 
 
