@@ -2,13 +2,13 @@
 assets were made by myself. 
 
 Player one controls:
-  W forward
-  S backward
-  A rotate counter-clockwise
-  D rotate clockwise
+  W forward,
+  S backward,
+  A rotate counter-clockwise,
+  D rotate clockwise,
  
 Player two controls:
-  UpArrow forward
-  DownArrow backward
-  LeftArrow rotate counter-clockwise
-  RightArrow rotate clockwise
+  UpArrow forward,
+  DownArrow backward,
+  LeftArrow rotate counter-clockwise,
+  RightArrow rotate clockwise,
