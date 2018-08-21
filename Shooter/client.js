@@ -1,14 +1,22 @@
 let fps = 60;
 
+
 let p1 = {
   x: 0,
   y: 0,
   vx: 0,
   vy: 0,
   orient: 0,
+  health: 100,
   render: function(){
     ctx.fillStyle = 'orange';
     ctx.fillRect(p1.x,p1.y,15,15);
+    ctx.fillStyle = 'silver';
+    ctx.fillRect(20,20,100,10);
+    ctx.fillStyle = 'red';
+    ctx.fillRect(20,20,p1.health,10)
+    ctx.fillStyle = 'black';
+    ctx.fillText(`P1: ${p1.health}/100`,30,30);
   },
   update: function(){
     p1.x += p1.vx;
@@ -16,6 +24,35 @@ let p1 = {
   },
   ammo: 100 
 }
+
+let p2 ={
+  x: 800,
+  y: 500,
+  vx: 0,
+  vy: 0,
+  orient: 0,
+  health: 100,
+  render: function(){
+    ctx.fillStyle = 'orange';
+    ctx.fillRect(p2.x,p2.y,15,15);
+    ctx.fillStyle = 'silver';
+    ctx.fillRect(canv.width-150,20,100,10);
+    ctx.fillStyle = 'red';
+    ctx.fillRect(canv.width-150,20,p2.health,10)
+    ctx.fillStyle = 'black';
+    ctx.fillText(`P2: ${p2.health}/100`,canv.width-125,30);
+  },
+  update: function(){
+    p2.x += p2.vx;
+    p2.y += p2.vy;
+  },
+  ammo: 100 
+}
+
+let playerList = [p1,p2];
+ 
+
+
 
 function newShot(){
   let shot = {
@@ -67,17 +104,21 @@ window.onload = function() {
     
 
     ctx.fillText(`Ammo: ${p1.ammo}`,50,50);
+    ctx.fillText(`Ammo: ${p2.ammo}`,canv.width-125,50);
     
     ctx.fillStyle = 'pink';
     ammoList.forEach(ammo =>{
-      if(!ammo.used){
-        ctx.fillRect(ammo.x,ammo.y,ammo.dx,ammo.dy);
-      }
-      if(!ammo.used && ammo.x >= p1.x && ammo.x <= p1.x + 15
-        && ammo.y >= p1.y && ammo.y <= p1.y + 15){
-        p1.ammo++;
-        ammo.used = true;
-      }
+      playerList.forEach((player,index,arr) => {
+        if(!ammo.used){
+          ctx.fillRect(ammo.x,ammo.y,ammo.dx,ammo.dy);
+        }
+        if(!ammo.used && ammo.x >= player.x && ammo.x <= player.x + 15
+          && ammo.y >= player.y && ammo.y <= player.y + 15){
+          arr[index].health -= 15;
+          arr[index].ammo++;
+          ammo.used = true;
+        }
+      })
     });
 
     ctx.fillStyle = 'black';
@@ -85,9 +126,14 @@ window.onload = function() {
       ctx.fillRect(wall.x,wall.y,wall.dx,wall.dy);
     })
 
-    p1.update();
-    p1.render();
+    playerList.forEach(player => {
+      player.update();
+      player.render();
+    });
+   
     
+    
+    tempShotList = [];
     shotList.forEach(shot => {
       for(var i =0; i<testMaze.length;i++){
         if(shot.x >= testMaze[i].x && shot.x <= testMaze[i].x +testMaze[i].dx  &&
@@ -96,8 +142,12 @@ window.onload = function() {
           break;
         }
       }
+      if(shot.isShot){
+        tempShotList.push(shot);
+      }
       shot.checkShot();
     });
+    shotList = tempShotList;
       
      
   }, 1000/fps);
@@ -131,7 +181,7 @@ function keyPress(evt){
       p1.vy = playerSpeed;
       p1.orient = 3;
       break;
-    case 81:
+    case 191:// /
       console.log('shoot');
       if(p1.ammo > 0){
         let shot = newShot();
@@ -162,6 +212,65 @@ function keyPress(evt){
       } else {
         console.log('Out of ammo!');
       }
+      break;
+    case 81:// q
+      console.log('shoot');
+      if(p2.ammo > 0){
+        let shot = newShot();
+        shot.x = p2.x;
+        shot.y = p2.y;
+        shot.isShot = true;
+
+        switch(p2.orient){ 
+          case 0:
+            shot.vx = -shotSpeed;
+            shot.vy = 0;
+            break;
+          case 1:
+            shot.vy = -shotSpeed;
+            shot.vx = 0;
+            break;
+          case 2:
+            shot.vx = shotSpeed;
+            shot.vy = 0;
+            break;
+          case 3:
+            shot.vy = shotSpeed;
+            shot.vx = 0;
+            break;
+        }
+        shotList.push(shot);
+        p2.ammo --;
+      } else {
+        console.log('Out of ammo!');
+      }
+      break;
+    case 87://W
+      p2.vy =  -playerSpeed;
+      p2.orient = 1;
+      break;
+    case 65://A
+      p2.vx = -playerSpeed;
+      p2.orient = 0;
+      break;
+    case 83://S
+      p2.vy = playerSpeed;
+      p2.orient = 3;
+      break;
+    case 68://D
+      p2.vx = playerSpeed;
+      p2.orient = 2;
+      break;
+
+
+
+
+
+
+
+
+
+
   }
 
 
@@ -185,6 +294,17 @@ function keyUp(evt){
       console.log('down');
       p1.vy = 0;
       break;
+    case 87:
+      p2.vy = 0;
+      break;
+    case 65:
+      p2.vx = 0;
+      break;
+    case 83:
+      p2.vy = 0;
+      break;
+    case 68:
+      p2.vx = 0;
   }
 
 
