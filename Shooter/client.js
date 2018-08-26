@@ -1,60 +1,41 @@
 let fps = 60;
 
+createPlayer = (playerName,px,py,hx,hy) => {
+  let that = {
+    x: px,
+    y: py,
+    vx: 0,
+    vy: 0,
+    orient: 0,
+    health: 100,
+    render: function(){
+      ctx.fillStyle = 'orange';
+      ctx.fillRect(that.x,that.y,15,15);
+      ctx.fillText(playerName,that.x+2,that.y-2);
+      ctx.fillStyle = 'silver';
+      ctx.fillRect(hx,hy,100,10);
+      ctx.fillStyle = 'red';
+      ctx.fillRect(hx,hy,that.health,10)
+      ctx.fillStyle = 'black';
+      ctx.fillText(playerName+`: ${that.health}/100`,hx+10,hy+10);
+    },
+    update: function(){
+      that.x += that.vx;
+      that.y += that.vy;
+    },
+    ammo: 100 
+  };
+  return that;
 
-let p1 = {
-  x: 0,
-  y: 0,
-  vx: 0,
-  vy: 0,
-  orient: 0,
-  health: 100,
-  render: function(){
-    ctx.fillStyle = 'orange';
-    ctx.fillRect(p1.x,p1.y,15,15);
-    ctx.fillStyle = 'silver';
-    ctx.fillRect(20,20,100,10);
-    ctx.fillStyle = 'red';
-    ctx.fillRect(20,20,p1.health,10)
-    ctx.fillStyle = 'black';
-    ctx.fillText(`P1: ${p1.health}/100`,30,30);
-  },
-  update: function(){
-    p1.x += p1.vx;
-    p1.y += p1.vy;
-  },
-  ammo: 100 
 }
 
-let p2 ={
-  x: 800,
-  y: 500,
-  vx: 0,
-  vy: 0,
-  orient: 0,
-  health: 100,
-  render: function(){
-    ctx.fillStyle = 'orange';
-    ctx.fillRect(p2.x,p2.y,15,15);
-    ctx.fillStyle = 'silver';
-    ctx.fillRect(canv.width-150,20,100,10);
-    ctx.fillStyle = 'red';
-    ctx.fillRect(canv.width-150,20,p2.health,10)
-    ctx.fillStyle = 'black';
-    ctx.fillText(`P2: ${p2.health}/100`,canv.width-125,30);
-  },
-  update: function(){
-    p2.x += p2.vx;
-    p2.y += p2.vy;
-  },
-  ammo: 100 
-}
-
+let p1 = createPlayer('P1',10,10,20,20);
+let p2 = createPlayer('P2',800,400,1200-150,20);
 let playerList = [p1,p2];
  
 
 
-
-function newShot(){
+newShot = () => {
   let shot = {
     x:0,
     y:0,
@@ -103,19 +84,20 @@ window.onload = function() {
     count = (count+1)%ammoRefresh;
     
 
+    ctx.fillStyle = 'maroon';
     ctx.fillText(`Ammo: ${p1.ammo}`,50,50);
     ctx.fillText(`Ammo: ${p2.ammo}`,canv.width-125,50);
     
     ctx.fillStyle = 'pink';
     ammoList.forEach(ammo =>{
-      playerList.forEach((player,index,arr) => {
+      playerList.forEach((player) => {
         if(!ammo.used){
           ctx.fillRect(ammo.x,ammo.y,ammo.dx,ammo.dy);
         }
         if(!ammo.used && ammo.x >= player.x && ammo.x <= player.x + 15
           && ammo.y >= player.y && ammo.y <= player.y + 15){
-          arr[index].health -= 15;
-          arr[index].ammo++;
+          player.health -= 15;
+          player.ammo++;
           ammo.used = true;
         }
       })
@@ -262,6 +244,8 @@ function keyPress(evt){
       p2.orient = 2;
       break;
   }
+
+
 }
 
 function keyUp(evt){
@@ -295,6 +279,7 @@ function keyUp(evt){
       p2.vx = 0;
       break;
   }
+
 }
 
 
